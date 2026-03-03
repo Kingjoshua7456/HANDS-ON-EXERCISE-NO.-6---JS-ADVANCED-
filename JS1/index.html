@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Javascript Web Output #1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .even {
+            color: green;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .odd {
+            color: blue;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        button {
+            margin-left: 5px;
+        }
+
+        .summary {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Javascript Web Output #1</h1>
+
+    <label>Insert any Positive Numbers:</label>
+    <input type="number" id="numberInput">
+    <button onclick="insertNumber()">Insert</button>
+    <button onclick="clearEntry()">Clear Entry</button>
+
+    <h3>Inserted Numbers</h3>
+    <div id="numberList"></div>
+
+    <div class="summary">
+        <div id="highest"></div>
+        <div id="lowest"></div>
+        <div id="total"></div>
+    </div>
+
+    <br>
+
+    <button onclick="clearItems()">Clear Items</button>
+    <button onclick="getTotal()">Get Total</button>
+    <button onclick="identifyHighLow()">Identify Highest and Lowest Number</button>
+
+    Sort by:
+    <select onchange="sortNumbers(this.value)">
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+    </select>
+
+<script>
+
+    let numbers = [];
+
+    function insertNumber() {
+        const input = document.getElementById("numberInput");
+        const value = parseInt(input.value);
+
+        if (isNaN(value) || value <= 0) {
+            alert("Please enter a positive number.");
+            return;
+        }
+
+        numbers.push(value);
+        input.value = "";
+        displayNumbers();
+    }
+
+    function clearEntry() {
+        document.getElementById("numberInput").value = "";
+    }
+
+    function displayNumbers() {
+        const list = document.getElementById("numberList");
+        list.innerHTML = "";
+
+        numbers.forEach((num, index) => {
+            const div = document.createElement("div");
+
+            const type = document.createElement("span");
+            type.textContent = num % 2 === 0 ? "EVEN" : "ODD";
+            type.className = num % 2 === 0 ? "even" : "odd";
+
+            div.innerHTML = num + " ";
+            div.appendChild(type);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.onclick = () => {
+                numbers.splice(index, 1);
+                displayNumbers();
+            };
+
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Edit";
+            editBtn.onclick = () => {
+                const newValue = prompt("Enter new value:", num);
+                if (newValue !== null && !isNaN(newValue) && newValue > 0) {
+                    numbers[index] = parseInt(newValue);
+                    displayNumbers();
+                }
+            };
+
+            div.appendChild(removeBtn);
+            div.appendChild(editBtn);
+
+            list.appendChild(div);
+        });
+    }
+
+    function clearItems() {
+        numbers = [];
+        displayNumbers();
+        document.getElementById("highest").innerHTML = "";
+        document.getElementById("lowest").innerHTML = "";
+        document.getElementById("total").innerHTML = "";
+    }
+
+    function getTotal() {
+        const total = numbers.reduce((sum, num) => sum + num, 0);
+        document.getElementById("total").innerHTML = "TOTAL " + total;
+    }
+
+    function identifyHighLow() {
+        if (numbers.length === 0) return;
+
+        const highest = Math.max(...numbers);
+        const lowest = Math.min(...numbers);
+
+        document.getElementById("highest").innerHTML = "HIGHEST " + highest;
+        document.getElementById("lowest").innerHTML = "LOWEST " + lowest;
+    }
+
+    function sortNumbers(order) {
+        if (order === "asc") {
+            numbers.sort((a, b) => a - b);
+        } else {
+            numbers.sort((a, b) => b - a);
+        }
+        displayNumbers();
+    }
+
+</script>
+
+</body>
+</html>
